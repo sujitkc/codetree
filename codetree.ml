@@ -91,22 +91,6 @@ let is_last_or_first_child fname f1 =
 let is_last_child = is_last_or_first_child "is_last_child" last_of_list
 let is_first_child = is_last_or_first_child "is_first_child" List.hd
 
-(*
-let is_last_child c =
-  match parent c with
-    Dummy -> failwith "is_last_child: Dummy not expected."
-  | Atomic(_, _, _) ->  failwith "is_last_child: Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, children, _) -> (last_of_list children) == c
-  | Concurrent(_, _, _) -> failwith "is_last_child: No last child defined for concurrent parent."
-
-let is_first_child c =
-  match parent c with
-    Dummy -> failwith "is_first_child: Dummy not expected."
-  | Atomic(_, _, _) ->  failwith "is_first_child: Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, children, _) -> (List.hd children) == c
-  | Concurrent(_, _, _) -> failwith "is_first_child: No last child defined for concurrent parent."
-*)
-
 let rec string_of_list string_of_element = function
     [] -> ""
   | h :: t -> string_of_element h ^ " " ^ (string_of_list string_of_element t)
@@ -125,24 +109,6 @@ let next_or_prev_element n1 n2 =
 let next_element = next_or_prev_element 0 1
 let prev_element = next_or_prev_element 1 0
 
-(* 
-let rec next_element e l =
-  match l with
-    [] -> failwith "next_element: empty list"
-  | [e'] -> failwith "next_element: too few elements"
-  | _ ->
-      if e == (List.nth l 0) then (List.nth l 1)
-      else next_element e (List.tl l)
-
-let rec prev_element e l =
-  match l with
-    [] -> failwith "prev_element: empty list"
-  | [e'] -> failwith "prev_element: too few elements"
-  | e' :: e'' :: t ->
-      if e == (List.nth l 1) then (List.nth l 0)
-      else prev_element e (List.tl l)
-*)
-
 let next_or_prev_sibling fname f1 =
   let f c =
     match parent c with
@@ -155,22 +121,6 @@ let next_or_prev_sibling fname f1 =
 
 let next_sibling = next_or_prev_sibling "next_sibling" next_element
 let prev_sibling = next_or_prev_sibling "prev_sibling" prev_element
-
-(*
-let next_sibling c =
-  match parent c with
-    Dummy -> failwith "next_sibling: Dummy not expected."
-  | Atomic(_, _, _) ->  failwith "next_sibling: Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, children, _) -> next_element c children
-  | Concurrent(_, _, _) -> failwith "next_sibling: No last child defined for concurrent parent."
- 
-let prev_sibling c =
-  match parent c with
-    Dummy -> failwith "prev_sibling: Dummy not expected."
-  | Atomic(_, _, _) ->  failwith "prev_sibling: Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, children, _) -> prev_element c children
-  | Concurrent(_, _, _) -> failwith "prev_sibling: No last child defined for concurrent parent."
-*)
 
 let next_or_prev f1 f2 f3 =
   let rec f c =
@@ -185,24 +135,6 @@ let next_or_prev f1 f2 f3 =
 
 let next = next_or_prev is_last_child first next_sibling
 let prev = next_or_prev is_first_child last prev_sibling
-
-(*
-let rec next c =
-  let p = parent c in
-  match p with
-    Dummy -> []
-  | Atomic(_, _, _) -> failwith "Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, _, _) -> if is_last_child c then next p else first (next_sibling c)
-  | Concurrent(_, _, _) -> next p
-
-let rec prev c =
-  let p = parent c in
-  match p with
-    Dummy -> []
-  | Atomic(_, _, _) -> failwith "Unreachable code! Atomic code can't be a parent."
-  | Sequence(_, _, _) -> if is_first_child c then prev p else last (prev_sibling c)
-  | Concurrent(_, _, _) -> prev p
-*)
 
 let print_code c =
   let rec print_indented c l =
